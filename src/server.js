@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-const PORT = 3000;
+const dotenv = require('dotenv').config()
+const PORT = process.env.PORT || 3000;
 const session = require('express-session');
 const bodyParser = require('body-parser');
 const chatRoutes = require('./routes/chat');

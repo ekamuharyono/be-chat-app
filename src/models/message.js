@@ -4,8 +4,9 @@ const Schema = mongoose.Schema;
 const messageSchema = new Schema({
   sender: String,
   receiver: String,
-  text: String
+  text: String,
+  participant: [String],
 });
-const Message = mongoose.model('Message', messageSchema);
 
+const Message = mongoose.model('Message', messageSchema);
 module.exports = Message;

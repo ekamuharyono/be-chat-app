@@ -40,32 +40,20 @@ router.post('/send', async (req, res) => {
 });
 
 router.get('/messages', async (req, res) => {
+  const { user1, user2 } = req.query;
+
   try {
-    const messages = await Message.find().sort('-timestamp');
+    const messages = await Message.find({
+      $or: [
+        { participant: [user1, user2] },
+        { participant: [user2, user1] },
+      ]
+    }).sort('-timestamp');
+
     res.json(messages);
   } catch (error) {
     res.status(500).json({ error: 'Gagal mengambil pesan' });
   }
-});
-
-io.on('connection', (socket) => {
-  console.log('User terhubung');
-
-  socket.on('disconnect', () => {
-    console.log('User terputus');
-  });
-
-  socket.on('send_message', async (message) => {
-    // Simpan pesan dalam basis data (Mongoose)
-    try {
-      const newMessage = new Message({ ...message });
-      await newMessage.save();
-      // Kirim pesan ke semua pengguna yang terhubung
-      io.emit('receive_message', newMessage);
-    } catch (error) {
-      console.error('Gagal mengirim pesan:', error);
-    }
-  });
 });
 
 module.exports = router;
